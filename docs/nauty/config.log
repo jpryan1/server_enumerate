@@ -1,0 +1,97 @@
+checking build system type... x86_64-unknown-linux-gnu
+checking host system type... x86_64-unknown-linux-gnu
+checking for gcc... gcc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ISO C89... none needed
+checking for special C compiler options needed for large files... no
+checking for _FILE_OFFSET_BITS value needed for large files... no
+checking if gcc supports -O4 flags... yes
+checking if gcc supports -march=i686 flags... no
+CFLAGS= -O4
+MORECFLAGS=
+checking for sys/wait.h that is POSIX.1 compatible... yes
+checking how to run the C preprocessor... gcc -E
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking signal.h usability... yes
+checking signal.h presence... yes
+checking for signal.h... yes
+checking stddef.h usability... yes
+checking stddef.h presence... yes
+checking for stddef.h... yes
+checking for unistd.h... (cached) yes
+checking for sys/types.h... (cached) yes
+checking for sys/wait.h... (cached) yes
+checking for stdlib.h... (cached) yes
+checking for string.h... (cached) yes
+checking errno.h usability... yes
+checking errno.h presence... yes
+checking for errno.h... yes
+checking pthread.h usability... yes
+checking pthread.h presence... yes
+checking for pthread.h... yes
+checking for pid_t... yes
+checking if malloc is declared in stdlib.h or malloc.h... 1
+checking if ftell is declared in stdio.h... 1
+checking if fdopen is declared in stdio.h... 1
+checking if popen is declared in stdio.h... 1
+checking if putenv is declared in stdlib.h... 1
+checking if setenv is declared in stdlib.h... 1
+checking if INFINITY is declared in math.h... 1
+checking size of int... 4
+checking size of long... 8
+checking size of long long... 8
+checking for an ANSI C-conforming const... yes
+checking for isatty... yes
+checking for times... yes
+checking for time... yes
+checking for gettimeofday... yes
+checking for times... (cached) yes
+checking for getrusage... yes
+checking for perror... yes
+checking for pipe... yes
+checking for wait... yes
+checking for popen... yes
+checking for putenv... yes
+checking for setenv... yes
+checking vfork.h usability... no
+checking vfork.h presence... no
+checking for vfork.h... no
+checking for fork... yes
+checking for vfork... yes
+checking for working fork... yes
+checking for working vfork... (cached) yes
+checking for fseeko... yes
+checking for sigaction... yes
+checking for sigprocmask... yes
+checking if __builtin_clz() is supported... 1
+checking if __builtin_clzl() is supported... 1
+checking if __builtin_clzll() is supported... 1
+checking for pthread_create... no
+checking for pthread_create in -lpthread... yes
+checking for getc_unlocked... yes
+checking for flockfile... yes
+checking for gsort... no
+checking for sort... sort
+checking if sort supports the -k switch... 1
+configure: creating ./config.status
+config.status: creating makefile
+config.status: creating nauty.h
+config.status: creating naututil.h
+config.status: creating gtools.h

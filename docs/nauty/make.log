@@ -1,0 +1,20 @@
+make[1]: Entering directory `/home/jpr349/Cluster/src/nauty'
+gcc -c -O4  -o nauty.o nauty.c
+gcc -c -O4  -o nautil.o nautil.c
+gcc -c -O4  -o nausparse.o nausparse.c
+gcc -c -O4  -o naugraph.o naugraph.c
+gcc -c -O4  -o schreier.o schreier.c
+gcc -c -O4  -o naurng.o naurng.c
+gcc -c -O4  -o traces.o traces.c
+gcc -c -O4  -o gtools.o gtools.c
+gcc -c -O4  -o naututil.o naututil.c
+gcc -c -O4  -o nautinv.o nautinv.c
+gcc -c -O4  -o gutil1.o gutil1.c
+gcc -c -O4  -o gutil2.o gutil2.c
+gcc -c -O4  -o gtnauty.o gtnauty.c
+gcc -c -O4  -o naugroup.o naugroup.c
+rm -rf nauty.a
+ar crs nauty.a nauty.o nautil.o nausparse.o naugraph.o schreier.o naurng.o traces.o gtools.o naututil.o \
+	 nautinv.o gutil1.o gutil2.o gtnauty.o naugroup.o \
+	 naurng.o schreier.o
+make[1]: Leaving directory `/home/jpr349/Cluster/src/nauty'
