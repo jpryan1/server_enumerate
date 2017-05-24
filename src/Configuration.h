@@ -1,8 +1,7 @@
 #ifndef  _CONFIGURATION_H_    /* only process this file once */
 #define  _CONFIGURATION_H_
 
-#define NUM_OF_SPHERES 13
-
+#define NUM_OF_SPHERES 10
 
 #define MAXP 1e5   /* maximum number of permutations to count */
 
@@ -82,7 +81,7 @@ public:
 	
 	void chooseTriangle();
 	int fixTriangle();
-	
+	int checkTriangle();
 	void printDetails();
 	
 	

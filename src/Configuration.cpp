@@ -25,6 +25,27 @@ void Configuration::printTriangle(){
 			std::cout<<p(3*triangle[i]+j)<<" ";
 		}std::cout<<std::endl;
 	}
+	
+	
+	
+	double dist = 0;
+	for(int i=0; i<3; i++){
+		dist += pow(p(3*triangle[0]+i) - p(3*triangle[1]+i), 2);
+	}std::cout<<"0 1: "<<dist<<std::endl;
+	dist = 0;
+	
+	for(int i=0; i<3; i++){
+		dist += pow(p(3*triangle[0]+i) - p(3*triangle[2]+i), 2);
+	}std::cout<<"0 1: "<<dist<<std::endl;
+	dist = 0;
+	
+	for(int i=0; i<3; i++){
+		dist += pow(p(3*triangle[1]+i) - p(3*triangle[2]+i), 2);
+	}std::cout<<"1 2: "<<dist<<std::endl;
+	dist = 0;
+	
+	
+	
 }
 
 

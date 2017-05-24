@@ -10,7 +10,7 @@ std::vector<Configuration> Configuration::walk(){
 	//We take steps in both directions along the 1D manifold (hence the two-step for-loop)
 	ConfigVector direction = this->v;
 	ConfigVector copy_d = direction;
-	
+	double path_length=0;
 	
 	
 	
@@ -63,6 +63,7 @@ std::vector<Configuration> Configuration::walk(){
 		direction = direction/direction.norm();
 		double step_size = DEL_S0;
 		bool small_step = false;
+		path_length = 0;
 		while(1){
 			//Take a step...
 		//	std::cout<<"Direction is "<<direction<<"\n\n"<<std::endl;
@@ -71,6 +72,10 @@ std::vector<Configuration> Configuration::walk(){
 			//...and project back onto manifold
 			ConfigVector p_before = proj;
 			if(!project(next, proj)){
+				break;
+			}
+			path_length += (p_before-proj).norm();
+			if(path_length>30*DEL_S0){
 				break;
 			}
 			//Update animation

@@ -12,7 +12,7 @@
 #include "Configuration.h"
 #include "Bank.h"
 #include "Timer.h"
-#define NUM_THREADS 16
+#define NUM_THREADS 8
 
 std::queue<Configuration> Queue;
 std::mutex bank_lock;
@@ -39,6 +39,7 @@ void debug();
 
 
 int main(int argc, char** argv){
+	
 	Eigen::initParallel();
 	std::cout.precision(16);
 	
@@ -126,7 +127,7 @@ void enumerateClusters(Configuration* initial, Bank* bank){
 //	timer.display();
 	
 	
-	bank->printDetails();
+//	bank->printDetails();
 }
 
 
@@ -232,20 +233,31 @@ void breakContactsAndAdd(Configuration& current, Bank& predim ){
 void debug(){
 	
 	
-	Configuration first,second;
-	std::ifstream debugFile;
-	debugFile.open ("debug.txt");
-	if (debugFile.is_open()){
-		first.readClusterFromFile(debugFile);
-		second.readClusterFromFile(debugFile);
-		first.permMatches(second, true);
-		debugFile.close();
-	}else{
-		std::cout<<"Failed to open debug file!"<<std::endl;
-		
+	Configuration first;//,second;
+//	std::ifstream debugFile;
+//	debugFile.open ("debug.txt");
+//	if (debugFile.is_open()){
+//		first.readClusterFromFile(debugFile);
+//		second.readClusterFromFile(debugFile);
+//		first.permMatches(second, true);
+//		debugFile.close();
+//	}else{
+//		std::cout<<"Failed to open debug file!"<<std::endl;
+//		
+//	}
+	first.addEdge(0,1);
+	first.addEdge(0,2);
+	first.addEdge(0,3);
+	first.addEdge(1,3);
+	first.addEdge(2,3);
+	
+	first.canonize();
+	
+	for(int i=0; i<first.ptype.np; i++){
+		for(int j=0; j<NUM_OF_SPHERES;j++){
+			std::cout<<first.ptype.perms[i*NUM_OF_SPHERES+j];
+		}std::cout<<std::endl;
 	}
-	
-	
 
 	
 	

@@ -65,15 +65,19 @@ int Configuration::matchesHelper(Configuration& other, bool det){
 int Configuration::permMatches(Configuration& other,  bool det){
 	ConfigVector holder = this->p;
 	for(int i=0; i<ptype.np; i++){
+		
+		
 		for(int j=0; j<NUM_OF_SPHERES; j++){
 			int perm = ptype.perms[i*NUM_OF_SPHERES+j];
 			for(int k=0; k<3; k++){
 				this->p(3*j+k) = holder(3*perm + k);
 			}
 		}
-		
-		
-		
+		//check triangle, if its bad then move on
+		if(!checkTriangle()){
+			this->p = holder;
+			continue;
+		}
 		bool flag = false;
 		if(matchesHelper(other, det)){
 			flag = true;
@@ -87,6 +91,35 @@ int Configuration::permMatches(Configuration& other,  bool det){
 	return 0;
 }
 
+
+
+int Configuration::checkTriangle(){
+	double dist = 0;
+	for(int i=0; i<3; i++){
+		dist+= pow(p(3*triangle[0]+i)-p(3*triangle[1]+i),2);
+	}
+	if(fabs(dist-1)>1e-5){
+		return 0;
+	}
+	dist = 0;
+	
+	for(int i=0; i<3; i++){
+		dist+= pow(p(3*triangle[0]+i)-p(3*triangle[2]+i),2);
+	}
+	if(fabs(dist-1)>1e-5){
+		return 0;
+	}
+	dist = 0;
+	
+	for(int i=0; i<3; i++){
+		dist+= pow(p(3*triangle[2]+i)-p(3*triangle[1]+i),2);
+	}
+	if(fabs(dist-1)>1e-5){
+		return 0;
+	}
+	return 1;
+	
+}
 
 void Configuration::chooseTriangle(){
 	
@@ -144,7 +177,7 @@ void Configuration::chooseTriangle(){
 
 
 int Configuration::fixTriangle(){
-	
+
 	double translate[3];
 	for(int i=0; i<3; i++){
 		translate[i] = -this->p(3*triangle[0]+i);
@@ -236,13 +269,14 @@ int Configuration::fixTriangle(){
 			}
 		}
 	}
-	
-	if(this->p(3*triangle[2])<0){
-		std::cout<<" Fixing just failed, what a horrible function"<<std::endl;
-		std::cout<<"Previously: "<<std::endl;
-		std::cout<<"Now"<<std::endl;
-		printTriangle();
-	}
+//	
+//	if(this->p(3*triangle[2])<0){
+//		std::cout<<" Fixing just failed, what a horrible function"<<std::endl;
+//		std::cout<<"Previously: "<<std::endl;
+//		cop.printTriangle();
+//		std::cout<<"Now"<<std::endl;
+//		printTriangle();
+//	}
 	
 	
 	
@@ -263,11 +297,14 @@ int Configuration::canonize(){
 	int lab[NUM_OF_SPHERES];
 	int ptn[NUM_OF_SPHERES];
 	int orbits[NUM_OF_SPHERES];
-	
+	grouprec *group;
+	statsblk stats;
+	graph canonized[NUM_OF_SPHERES];
+
 	DEFAULTOPTIONS_GRAPH(options);
 	options.getcanon = true;
 	
-	grouprec *group;
+	
 	
 	/* The following case nauty to call two procedures which store the
 	 * group information as nauty runs */
@@ -276,68 +313,32 @@ int Configuration::canonize(){
 	
 	
 	
-	statsblk stats;
-	
-	graph canonized[NUM_OF_SPHERES];
-	//
+
 	densenauty(this->g, lab, ptn, orbits, &options, &stats, 1, NUM_OF_SPHERES, canonized);
-	//
-/*	
-	 Get a pointer to the structure in which the group information has
-	 * been stored. If you use TRUE as an argument, the structure will be
-	 * "cut loose" so that it won't be used again the next time nauty()
-	 * is called. Otherwise, as here, the same structure is used repeatedly. *
-	group = groupptr(FALSE);
-	* Expand the group structure to includea full set of coset representatives at every level. This step is necessary if allgroup() is to be called. *
-	makecosetreps(group);
-	
-	 Count the number of permutations *
-	ptype.np = 0;
-	
-	allgroup3(group,countperms,&ptype);
-
-	//create c^-1
-	for(int i=0; i<NUM_OF_SPHERES; i++){
-		//just recycle the ptn array
-		ptn[lab[i]] = i;
-	}
-	//now ptn is c^-1
-	//we need a temp array now, recycle orbits
-	//left multiply c^-1 by each p, replace the p
-	for(int i=0; i<ptype.np; i++){
-		for(int j=0; j<NUM_OF_SPHERES; j++){
-			orbits[j] = lab[ptype.perms[i*NUM_OF_SPHERES+ptn[j]]];
-		}
-		memcpy(&(ptype.perms[i*NUM_OF_SPHERES]), orbits, NUM_OF_SPHERES*sizeof(int));
-	}
-
-
-
-*/
 
 	double newPoints[3*NUM_OF_SPHERES];
-	
 	for(int i=0; i< NUM_OF_SPHERES; i++){
 		for(int j=0; j<3; j++){
 			newPoints[3*i+j] = (this->p) (3*lab[i]+j);
 		}
 	}
-	
-	
 	memcpy(&(this->p), newPoints, sizeof(double)*NUM_OF_SPHERES*3);
 	memcpy(this->g, canonized, sizeof(graph)*NUM_OF_SPHERES);
-
-
-
+	
 	densenauty(this->g, lab, ptn, orbits, &options, &stats, 1, NUM_OF_SPHERES, canonized);
+	
 	group = groupptr(FALSE);
 	makecosetreps(group);
 	ptype.np=0;
 	allgroup3(group,countperms,&ptype);
 
 	
+	
+	
 	chooseTriangle();
 	return fixTriangle();
 	
+
+
 	
 }
