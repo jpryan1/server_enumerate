@@ -12,7 +12,7 @@
 #include "Configuration.h"
 #include "Bank.h"
 #include "Timer.h"
-#define NUM_THREADS 8
+#define NUM_THREADS 16
 
 std::queue<Configuration> Queue;
 std::mutex bank_lock;

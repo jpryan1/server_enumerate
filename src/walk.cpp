@@ -75,7 +75,7 @@ std::vector<Configuration> Configuration::walk(){
 				break;
 			}
 			path_length += (p_before-proj).norm();
-			if(path_length>30*DEL_S0){
+			if(path_length>60*DEL_S0){
 				break;
 			}
 			//Update animation
