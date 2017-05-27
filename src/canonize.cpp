@@ -64,9 +64,9 @@ int Configuration::matchesHelper(Configuration& other, bool det){
 
 int Configuration::permMatches(Configuration& other,  bool det){
 	ConfigVector holder = this->p;
+	
 	for(int i=0; i<ptype.np; i++){
-		
-		
+		this->p = holder;
 		for(int j=0; j<NUM_OF_SPHERES; j++){
 			int perm = ptype.perms[i*NUM_OF_SPHERES+j];
 			for(int k=0; k<3; k++){
@@ -75,6 +75,10 @@ int Configuration::permMatches(Configuration& other,  bool det){
 		}
 		//check triangle, if its bad then move on
 		if(!checkTriangle()){
+			printTriangle();
+			
+			std::cout<<"\n\n"<<holder<<std::endl;
+			exit(0);
 			this->p = holder;
 			continue;
 		}
@@ -284,8 +288,17 @@ int Configuration::fixTriangle(){
 	return project();
 }
 
+void Configuration::printAdj(){
+	
+	std::cout<<"Graph:"<<std::endl;
+	for(int i=0; i<NUM_OF_SPHERES; i++){
+		std::cout << std::bitset<8*sizeof(graph)>(g[i]);// << std::endl;
+	}std::cout<<std::endl;
 
+}
 int Configuration::canonize(){
+	
+	
 	
 	
 	//These arrays are passed to sparsenauty in canonization, so that function can write its data somewhere
@@ -315,29 +328,30 @@ int Configuration::canonize(){
 	
 
 	densenauty(this->g, lab, ptn, orbits, &options, &stats, 1, NUM_OF_SPHERES, canonized);
-
+	
+	
 	double newPoints[3*NUM_OF_SPHERES];
 	for(int i=0; i< NUM_OF_SPHERES; i++){
 		for(int j=0; j<3; j++){
 			newPoints[3*i+j] = (this->p) (3*lab[i]+j);
 		}
 	}
+	
 	memcpy(&(this->p), newPoints, sizeof(double)*NUM_OF_SPHERES*3);
 	memcpy(this->g, canonized, sizeof(graph)*NUM_OF_SPHERES);
-	
+
 	densenauty(this->g, lab, ptn, orbits, &options, &stats, 1, NUM_OF_SPHERES, canonized);
+
+	
 	
 	group = groupptr(FALSE);
 	makecosetreps(group);
 	ptype.np=0;
 	allgroup3(group,countperms,&ptype);
 
-	
-	
-	
+	//printTriangle();
 	chooseTriangle();
 	return fixTriangle();
-	
 
 
 	

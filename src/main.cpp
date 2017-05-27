@@ -12,7 +12,7 @@
 #include "Configuration.h"
 #include "Bank.h"
 #include "Timer.h"
-#define NUM_THREADS 16
+#define NUM_THREADS 8
 
 std::queue<Configuration> Queue;
 std::mutex bank_lock;
@@ -73,7 +73,7 @@ void threadFunc(Bank* predim, Bank* bank){
 		queue_lock.unlock();
 		int added;
 		bank_lock.lock();	
-		if(!current.canonize()){//necessary because nauty can't parallel
+		if(!current.canonize()){
 			bank_lock.unlock();
                 	continue;
 		}
@@ -193,10 +193,11 @@ void breakContactsAndAdd(Configuration& current, Bank& predim ){
 			// the queue, or delete it, depending on whether it is rigid.
 			copy = Configuration(current);
 			copy.deleteEdge(i,j);
+			copy.ptype.perms.clear();
 			bank_lock.lock();
 			if(!copy.canonize()){
 				bank_lock.unlock();
-                                continue;
+				continue;
 			}
 			if(!predim.add(copy)){
 				
@@ -234,31 +235,28 @@ void debug(){
 	
 	
 	Configuration first;//,second;
-//	std::ifstream debugFile;
-//	debugFile.open ("debug.txt");
-//	if (debugFile.is_open()){
-//		first.readClusterFromFile(debugFile);
-//		second.readClusterFromFile(debugFile);
-//		first.permMatches(second, true);
-//		debugFile.close();
-//	}else{
-//		std::cout<<"Failed to open debug file!"<<std::endl;
-//		
-//	}
-	first.addEdge(0,1);
-	first.addEdge(0,2);
-	first.addEdge(0,3);
-	first.addEdge(1,3);
-	first.addEdge(2,3);
-	
-	first.canonize();
-	
-	for(int i=0; i<first.ptype.np; i++){
-		for(int j=0; j<NUM_OF_SPHERES;j++){
-			std::cout<<first.ptype.perms[i*NUM_OF_SPHERES+j];
-		}std::cout<<std::endl;
+	std::ifstream debugFile;
+	debugFile.open ("debug.txt");
+	if (debugFile.is_open()){
+		first.readClusterFromFile(debugFile);
+		
+		first.deleteEdge(0,1);
+		first.ptype.perms.clear();
+		first.canonize();
+		ConfigVector holder = first.p;
+		for(int i=0; i<first.ptype.np; i++){
+			for(int j=0; j<NUM_OF_SPHERES; j++){
+				double perm = first.ptype.perms[i*NUM_OF_SPHERES+j];
+				std::cout<<perm;
+				for(int k=0; k<3; k++) first.p(3*j + k) = holder(3*perm+ k);
+			}std::cout<<std::endl;
+			std::cout<<first.checkTriangle()<<std::endl;;
+		}
+		debugFile.close();
+	}else{
+		std::cout<<"Failed to open debug file!"<<std::endl;
+		
 	}
-
 	
 	
 	

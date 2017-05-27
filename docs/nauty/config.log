@@ -1,5 +1,5 @@
-checking build system type... x86_64-unknown-linux-gnu
-checking host system type... x86_64-unknown-linux-gnu
+checking build system type... x86_64-apple-darwin16.4.0
+checking host system type... x86_64-apple-darwin16.4.0
 checking for gcc... gcc
 checking whether the C compiler works... yes
 checking for C compiler default output file name... a.out
@@ -83,8 +83,7 @@ checking for sigprocmask... yes
 checking if __builtin_clz() is supported... 1
 checking if __builtin_clzl() is supported... 1
 checking if __builtin_clzll() is supported... 1
-checking for pthread_create... no
-checking for pthread_create in -lpthread... yes
+checking for pthread_create... yes
 checking for getc_unlocked... yes
 checking for flockfile... yes
 checking for gsort... no

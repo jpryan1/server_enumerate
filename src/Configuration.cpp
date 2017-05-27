@@ -36,7 +36,7 @@ void Configuration::printTriangle(){
 	
 	for(int i=0; i<3; i++){
 		dist += pow(p(3*triangle[0]+i) - p(3*triangle[2]+i), 2);
-	}std::cout<<"0 1: "<<dist<<std::endl;
+	}std::cout<<"0 2: "<<dist<<std::endl;
 	dist = 0;
 	
 	for(int i=0; i<3; i++){
@@ -152,6 +152,8 @@ void Configuration::readClusterFromFile(std::istream& file){
 			}
 		}
 	}
+	
+	
 	this->canonize();
 	
 }

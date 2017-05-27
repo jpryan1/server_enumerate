@@ -1,7 +1,7 @@
 #ifndef  _CONFIGURATION_H_    /* only process this file once */
 #define  _CONFIGURATION_H_
 
-#define NUM_OF_SPHERES 13
+#define NUM_OF_SPHERES 11
 
 #define MAXP 1e5   /* maximum number of permutations to count */
 
@@ -32,6 +32,7 @@
 #include <vector>
 #include <bitset>
 #include <ctime>
+#include <bitset>
 
 using namespace Eigen;
 typedef Matrix<double, 3*NUM_OF_SPHERES, 1> ConfigVector;
@@ -117,6 +118,9 @@ public:
 	}
 	int num_of_contacts;
 	void printTriangle();
+	void printAdj();
+		
+
 	void show(int a);
 	
 	void readClusterFromFile(std::istream& file);
@@ -125,12 +129,10 @@ public:
 	
 	ConfigVector p;
 	permtype ptype;
-	
-	
+	int triangle[3];
 	
 private:
 	bool isRegular;
-	int triangle[3];
 	ConfigVector v;
 	
 	// contains 3*n doubles for points in space
