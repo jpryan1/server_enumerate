@@ -57,8 +57,10 @@ int Configuration::dimensionOfTangentSpace(bool useNumericalMethod){
 	//Find right null space
 	bool null_flag = false;
 	MatrixXd right_null_space = getRightNullSpace(rigid_x, &null_flag);
-	if(null_flag) return 0;
-	
+	if(null_flag){
+		if(0<=3*NUM_OF_SPHERES - 6 - num_of_contacts) this->isRegular=true;
+		return 0;
+	}
 	//std::cout<<"rightns is "<<right_null_space<<"\n\n"<<std::endl;
 	int V = right_null_space.cols();
 	this->v = right_null_space.col(0);

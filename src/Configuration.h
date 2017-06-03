@@ -27,7 +27,6 @@
 #include "Eigen/Dense"
 #include "nauty.h"
 #include "naugroup.h"
-#include "Timer.h"
 
 #include <vector>
 #include <bitset>

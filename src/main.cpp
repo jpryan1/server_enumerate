@@ -11,8 +11,8 @@
 #include <mutex>
 #include "Configuration.h"
 #include "Bank.h"
-#include "Timer.h"
 #define NUM_THREADS 16
+
 
 std::queue<Configuration> Queue;
 std::mutex bank_lock;
@@ -194,7 +194,7 @@ void breakContactsAndAdd(Configuration& current, Bank& predim ){
 			copy = Configuration(current);
 			copy.deleteEdge(i,j);
 			copy.ptype.perms.clear();
-/*			bank_lock.lock();
+			bank_lock.lock();
 			if(!copy.canonize()){
 				bank_lock.unlock();
 				continue;
@@ -206,7 +206,7 @@ void breakContactsAndAdd(Configuration& current, Bank& predim ){
 			}
 			
 			bank_lock.unlock();
-*/			dim = copy.dimensionOfTangentSpace(true);
+			dim = copy.dimensionOfTangentSpace(true);
 			
 			
 			if(dim == 0){
@@ -240,18 +240,6 @@ void debug(){
 	if (debugFile.is_open()){
 		first.readClusterFromFile(debugFile);
 		
-		first.deleteEdge(0,1);
-		first.ptype.perms.clear();
-		first.canonize();
-		ConfigVector holder = first.p;
-		for(int i=0; i<first.ptype.np; i++){
-			for(int j=0; j<NUM_OF_SPHERES; j++){
-				double perm = first.ptype.perms[i*NUM_OF_SPHERES+j];
-				std::cout<<perm;
-				for(int k=0; k<3; k++) first.p(3*j + k) = holder(3*perm+ k);
-			}std::cout<<std::endl;
-			std::cout<<first.checkTriangle()<<std::endl;;
-		}
 		debugFile.close();
 	}else{
 		std::cout<<"Failed to open debug file!"<<std::endl;
