@@ -27,7 +27,7 @@ int Bank::recursiveAdd(Configuration& c, BankNode* node){
 				return 0;
 			}
 		}
-		if(isMainBank){
+	/*	if(isMainBank){
 			std::cout<<"Compared the following, no match"<<std::endl;
 			c.printDetails();
 			node->configs[0].printDetails();
@@ -43,7 +43,7 @@ int Bank::recursiveAdd(Configuration& c, BankNode* node){
 //			c.printOrbits();
 //			node->configs[0].printOrbits();
 //			std::cout<<"\n\n\n\n"<<std::endl;
-		}
+		}*/
 		node->configs.push_back(c);
 		return 1;
 	}else if(comp < 0){

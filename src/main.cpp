@@ -12,7 +12,7 @@
 #include "Configuration.h"
 #include "Bank.h"
 #include "Timer.h"
-#define NUM_THREADS 8
+#define NUM_THREADS 16
 
 std::queue<Configuration> Queue;
 std::mutex bank_lock;
@@ -127,7 +127,7 @@ void enumerateClusters(Configuration* initial, Bank* bank){
 //	timer.display();
 	
 	
-//	bank->printDetails();
+	bank->printDetails();
 }
 
 
@@ -194,7 +194,7 @@ void breakContactsAndAdd(Configuration& current, Bank& predim ){
 			copy = Configuration(current);
 			copy.deleteEdge(i,j);
 			copy.ptype.perms.clear();
-			bank_lock.lock();
+/*			bank_lock.lock();
 			if(!copy.canonize()){
 				bank_lock.unlock();
 				continue;
@@ -206,7 +206,7 @@ void breakContactsAndAdd(Configuration& current, Bank& predim ){
 			}
 			
 			bank_lock.unlock();
-			dim = copy.dimensionOfTangentSpace(true);
+*/			dim = copy.dimensionOfTangentSpace(true);
 			
 			
 			if(dim == 0){

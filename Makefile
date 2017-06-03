@@ -53,8 +53,8 @@ build/src/naugroup.o: src/naugroup.c
 
 
 
-compile: build/src/main.o build/src/Config.o build/src/walk.o build/src/dimension.o build/src/canonize.o build/src/project.o build/src/Bank.o build/src/Timer.o build/src/naugroup.o
-	g++ $(LFLAGS) $(AFLAGS) $(FAST_FLAG) -o build/enumerate_clusters build/src/main.o build/src/Config.o build/src/walk.o build/src/dimension.o build/src/canonize.o build/src/project.o build/src/Bank.o build/src/Timer.o build/src/naugroup.o build/lib/nauty.a
+compile: build/src/main.o build/src/Config.o build/src/walk.o build/src/dimension.o build/src/canonize.o build/src/project.o build/src/Bank.o build/src/naugroup.o
+	g++ $(LFLAGS) $(AFLAGS) $(FAST_FLAG) -o build/enumerate_clusters build/src/main.o build/src/Config.o build/src/walk.o build/src/dimension.o build/src/canonize.o build/src/project.o build/src/Bank.o build/src/naugroup.o build/lib/nauty.a
 
 
 compile_process: build/src/process.o build/src/Config.o build/src/walk.o build/src/dimension.o build/src/canonize.o build/src/project.o build/src/Bank.o build/src/Timer.o
