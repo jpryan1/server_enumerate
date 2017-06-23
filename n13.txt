@@ -1,2 +1,0 @@
-./build/enumerate_clusters r
-make: *** [run] Terminated
