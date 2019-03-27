@@ -10,9 +10,9 @@ recompile:
 configure:
 	@cd src/nauty && \
 	echo "Configuring nauty..." && \
-	./configure &> ../../docs/nauty/config.log  && \
+	./configure  && \
 	echo "Making nauty library..." && \
-	make &>../../docs/nauty/make.log nauty.a && \
+	make nauty.a && \
 	echo "Cleaning up..." && \
 	cd ../.. && \
 	cp src/nauty/nauty.a build/lib/ && \
@@ -54,7 +54,7 @@ build/src/naugroup.o: src/naugroup.c
 
 
 compile: build/src/main.o build/src/Config.o build/src/walk.o build/src/dimension.o build/src/canonize.o build/src/project.o build/src/Bank.o build/src/naugroup.o
-	g++ $(LFLAGS) $(AFLAGS) $(FAST_FLAG) -o build/enumerate_clusters build/src/main.o build/src/Config.o build/src/walk.o build/src/dimension.o build/src/canonize.o build/src/project.o build/src/Bank.o build/src/naugroup.o build/lib/nauty.a
+	g++ $(AFLAGS) $(FAST_FLAG) -o build/enumerate_clusters build/src/main.o build/src/Config.o build/src/walk.o build/src/dimension.o build/src/canonize.o build/src/project.o build/src/Bank.o build/src/naugroup.o build/lib/nauty.a $(LFLAGS)
 
 
 compile_process: build/src/process.o build/src/Config.o build/src/walk.o build/src/dimension.o build/src/canonize.o build/src/project.o build/src/Bank.o build/src/Timer.o

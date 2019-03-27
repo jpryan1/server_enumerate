@@ -1,55 +1,46 @@
-
-#ifndef  _BANK_H_    /* only process this file once */
-#define  _BANK_H_
-
+#ifndef  _ENUMERATION_H_    /* only process this file once */
+#define  _ENUMERATION_H_
 
 #include "Configuration.h"
 #include <vector>
 
 
-struct BankNode{
-	std::vector<Configuration> configs;
-	BankNode* left;
-	BankNode* right;
+struct EnumerationNode {
+  std::vector<Configuration> configs;
+  EnumerationNode* left;
+  EnumerationNode* right;
 };
 
-//s
 
+class Enumeration {
+  // This class will act like a binary tree of configurations, where the
+  // ordering is adj matrix in canonical form
+ public:
+  Enumeration(bool b = false) {
+    this->isMainEnumeration = b;
+    root = new EnumerationNode();
+    _size = 0;
+  }
 
-class Bank{
+  ~Enumeration() {
+    // Should traverse and delete all the configurations. TODO implement
+    // this.
+    delete root;
+  }
 
-	//This will have to act like a binary tree of configurations, where the ordering is adj matrix in canonical form
-	//TODO make this a self-balancing tree
-	
-public:
-	Bank(bool b = false){
-		this->isMainBank = b;
-		root = new BankNode();
-		_size = 0;
-	}
-	
-	~Bank(){
-		//This should traverse and delete all the configurations. To be honest,
-		// we don't ever actually delete the bank though, so this doesn't need
-		// to be implemented
-		delete root;
-	}
-	
-	int add(Configuration c);//RETURNS 1 IF ADDED, 0 IF ALREADY IN BANK
-	int size();
-	void printDetails();
-	
-	void printDuplicates();
-	void recPrintDuplicates(BankNode* node);
+  int add(Configuration c);  // Returns 1 if added, 0 if already in enumeration
+  int size();
+  void printDetails();
 
-	
-private:
-	bool isMainBank;
-	int _size;
-	BankNode* root;
-	int recursiveAdd(Configuration& c, BankNode* node);
-	void recPrint(BankNode* node);
+  void printDuplicates();
+  void recPrintDuplicates(EnumerationNode* node);
 
+ private:
+  bool isMainEnumeration;
+  int _size;
+  EnumerationNode* root;
+  int recursiveAdd(Configuration& c, EnumerationNode* node);
+  void recPrint(EnumerationNode* node);
 };
 
 
