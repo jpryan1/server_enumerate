@@ -1,20 +1,21 @@
 #define MAXN WORDSIZE
 #define ONE_WORD_SETS 1
-#include "Configuration.h"
+#include "configuration.h"
 #include "enumeration.h"
 #include <iostream>
 #include <fstream>
 
 void readPoints(std::istream& f, Configuration& c) {
   double d;
-  for (int i = 0; i < NUM_OF_SPHERES; i++) {
+  int num_of_spheres = c.p.rows() / 3;
+  for (int i = 0; i < num_of_spheres; i++) {
     for (int j = 0; j < 3; j++) {
       f >> d;
       c.p(3 * i + j) = d;
     }
   }
-  for (int i = 0; i < NUM_OF_SPHERES - 1; i++) {
-    for (int j = i + 1; j < NUM_OF_SPHERES; j++) {
+  for (int i = 0; i < num_of_spheres - 1; i++) {
+    for (int j = i + 1; j < num_of_spheres; j++) {
       double dist = 0;
       for (int k = 0; k < 3; k++) {
         dist += pow(c.p(3 * i + k) - c.p(3 * j + k), 2);

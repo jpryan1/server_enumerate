@@ -1,4 +1,4 @@
-#include "Bank.h"
+#include "enumeration.h"
 
 int Enumeration::add(Configuration c) {
   if (root->configs.size() < 1) {

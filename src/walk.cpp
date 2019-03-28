@@ -1,16 +1,16 @@
-#include "Configuration.h"
+#include "configuration.h"
 
 std::vector<Configuration> Configuration::walk() {
   std::vector<Configuration> newConfigs;
-  ConfigVector next, proj;
+  VectorXd next(3 * num_of_spheres), proj(3 * num_of_spheres);
   Configuration firststep;
   MatrixXd rigid_x;
   std::vector<Contact> contacts;
   double p, q, t;
   // We take steps in both directions along the 1D manifold (hence the two-step
   // for-loop)
-  ConfigVector direction = this->v;
-  ConfigVector copy_d = direction;
+  MatrixXd direction = this->v;
+  MatrixXd copy_d = direction;
   double path_length = 0;
 
   for (int i = 0; i < 2; i++) {
@@ -20,7 +20,7 @@ std::vector<Configuration> Configuration::walk() {
     next = DEL_S0 * direction + this->p;
 
     // ...and project back onto the manifold
-    if (!project(next, proj)) {
+    if (!project(&next, &proj)) {
       continue;
     }
 
@@ -41,7 +41,7 @@ std::vector<Configuration> Configuration::walk() {
 
     // Now we're committed to walking along the manifold in that direction
     // Now populate
-    rigid_x = MatrixXd::Zero(this->num_of_contacts + 6, 3 * NUM_OF_SPHERES);
+    rigid_x = MatrixXd::Zero(this->num_of_contacts + 6, 3 * num_of_spheres);
     populateRigidityMatrix(rigid_x, proj);
 
     bool temp = false;
@@ -64,7 +64,7 @@ std::vector<Configuration> Configuration::walk() {
       next = step_size * direction + proj;
       // ...and project back onto manifold
       ConfigVector p_before = proj;
-      if (!project(next, proj)) {
+      if (!project(&next, &proj)) {
         break;
       }
       path_length += (p_before - proj).norm();
@@ -83,7 +83,7 @@ std::vector<Configuration> Configuration::walk() {
         }
         // We reached the end of our walk!
         // Add the new configuration to our newConfigs list.
-        Configuration newC((double*) &proj, (graph*) &this->g);
+        Configuration newC((double*) &proj, (graph*) &this->g, num_of_spheres);
 
         for (int j = 0; j < contacts.size(); j++) {
           newC.addEdge(contacts[j].first, contacts[j].second);
@@ -94,7 +94,7 @@ std::vector<Configuration> Configuration::walk() {
 
       // The below is the projection of the direction vector onto the right
       // nullspace as described above
-      rigid_x = MatrixXd::Zero(this->num_of_contacts + 6, 3 * NUM_OF_SPHERES);
+      rigid_x = MatrixXd::Zero(this->num_of_contacts + 6, 3 * num_of_spheres);
       populateRigidityMatrix(rigid_x, proj);
 
       right_null_space = getRightNullSpace(rigid_x, &temp);

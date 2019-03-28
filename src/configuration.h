@@ -12,7 +12,7 @@
 #include "nauty.h"
 #include "naugroup.h"
 
-#define NUM_OF_SPHERES 8
+#define NUM_OF_SPHERES 10
 
 #define MAXP 1e5   /* maximum number of permutations to count */
 
@@ -61,15 +61,19 @@ class Configuration {
  public:
   Configuration() {
     this->num_of_contacts = 0;
-    memset(this->g, 0, sizeof(graph)*NUM_OF_SPHERES);
   }
-  Configuration(double* points, graph* adj);
+  
+  Configuration(double* points, graph* adj, int n);
   ~Configuration() {}
 
   Configuration(const Configuration& other) {
+    num_of_spheres = other.num_of_spheres;
     num_of_contacts = other.num_of_contacts;
-    memcpy(&p, &other.p, 3 * NUM_OF_SPHERES * sizeof(double));
-    memcpy(g, other.g, NUM_OF_SPHERES * sizeof(graph));
+    p = VectorXd(3 * num_of_spheres);
+    for(int i=0; i<p.rows(); i++){
+      p(i) = other.p(i);
+    }
+    memcpy(g, other.g, num_of_spheres * sizeof(graph));
     memcpy(triangle, other.triangle, 3 * sizeof(int));
     ptype.np = other.ptype.np;
     ptype.perms = other.ptype.perms;
@@ -98,13 +102,13 @@ class Configuration {
   int numerical_findDimension(MatrixXd& right_null_space);
   MatrixXd getRightNullSpace(MatrixXd rigid, bool* null_flag);
 
-  int project(ConfigVector& old, ConfigVector& proj);
+  int project(VectorXd* old, VectorXd* proj);
   int project();
-  void populate_F_vec(ConfigVector& initial, MatrixXd& F_vec);
+  void populate_F_vec(VectorXd& initial, VectorXd& F_vec);
 
   std::vector<Contact> checkForNewContacts(ConfigVector proj,
       bool smallTol = false);
-  void populateRigidityMatrix(MatrixXd& rigid, ConfigVector& points);
+  void populateRigidityMatrix(MatrixXd& rigid, VectorXd& points);
   std::vector<Configuration> walk();
 
   ConfigVector getP();
@@ -123,16 +127,16 @@ class Configuration {
 
   void swap(int i, int k);
 
-  ConfigVector p;
+  VectorXd p;
   permtype ptype;
   int triangle[3];
+  int num_of_spheres;
 
  private:
   bool isRegular;
   ConfigVector v;
 
   // contains 3*n doubles for points in space
-
   graph g[NUM_OF_SPHERES];
 };
 

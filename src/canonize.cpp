@@ -1,4 +1,4 @@
-#include "Configuration.h"
+#include "configuration.h"
 
 #define MAXP 1e5   /* maximum number of permutations to count */
 
@@ -11,7 +11,7 @@ void countperms(int *p, int n, int *abort, void *userptr)  {
     *abort = 1;
   } else {
     ptype->np = ptype->np + 1;
-    for (i = 0; i < NUM_OF_SPHERES; i++) {
+    for (i = 0; i < n; i++) {
       ptype->perms.push_back(p[i]);
     }
   }
@@ -27,7 +27,7 @@ int Configuration::compareGraph(Configuration& other) {
   setword* g1 = (setword*) this->g;
   setword* g2 = (setword*) other.g;
 
-  for (int i = 0; i < NUM_OF_SPHERES; i++) {
+  for (int i = 0; i < num_of_spheres; i++) {
     if (g1[i] < g2[i]) {
       return -1;
     } else if (g1[i] > g2[i]) {
@@ -45,7 +45,7 @@ int Configuration::matchesHelper(Configuration& other, bool det) {
   if (diff.norm() < tolD) {
     return 1;
   }
-  for (int i = 2; i < 3 * NUM_OF_SPHERES; i += 3) copy(i)  = -copy(i);
+  for (int i = 2; i < 3 * num_of_spheres; i += 3) copy(i)  = -copy(i);
   diff = copy - this->p;
   if (det) std::cout << diff.norm() << std::endl;
   if (diff.norm() < tolD) return 1;
@@ -58,8 +58,8 @@ int Configuration::permMatches(Configuration& other,  bool det) {
 
   for (int i = 0; i < ptype.np; i++) {
     this->p = holder;
-    for (int j = 0; j < NUM_OF_SPHERES; j++) {
-      int perm = ptype.perms[i * NUM_OF_SPHERES + j];
+    for (int j = 0; j < num_of_spheres; j++) {
+      int perm = ptype.perms[i * num_of_spheres + j];
       for (int k = 0; k < 3; k++) {
         this->p(3 * j + k) = holder(3 * perm + k);
       }
@@ -116,9 +116,9 @@ int Configuration::checkTriangle() {
 
 
 void Configuration::chooseTriangle() {
-  std::vector<int> degreeList[NUM_OF_SPHERES];
+  std::vector<int> degreeList[num_of_spheres];
 
-  for (int i = 0; i < NUM_OF_SPHERES; i++) {
+  for (int i = 0; i < num_of_spheres; i++) {
     int numEdges = 0;
     graph temp = this->g[i];
     while (temp > 0) {
@@ -133,11 +133,11 @@ void Configuration::chooseTriangle() {
   // So now the ith slot in degreeList is a vector containing the vertices with
   // degree i
 
-  int SBD[NUM_OF_SPHERES];
+  int SBD[num_of_spheres];
   // short for SORTED BY DEGREE
 
-  int idx = NUM_OF_SPHERES - 1;
-  for (int i = NUM_OF_SPHERES - 1; i >= 0; i--) {
+  int idx = num_of_spheres - 1;
+  for (int i = num_of_spheres - 1; i >= 0; i--) {
     for (int j = 0; j < degreeList[i].size(); j++) {
       SBD[idx--] = degreeList[i][j];
     }
@@ -148,7 +148,7 @@ void Configuration::chooseTriangle() {
   // Note that the below forloop could take NUM_OF_SPHERES^3 time, but
   // should usually take much less. We are looking among high degree vertices
   // for a triangle.
-  for (int i = NUM_OF_SPHERES - 1; i >= 0; i--) {
+  for (int i = num_of_spheres - 1; i >= 0; i--) {
     for (int j = i - 1; j >= 0; j--) {
       if (this->hasEdge(SBD[i], SBD[j])) {
         for (int k = j - 1; k >= 0; k--) {
@@ -172,7 +172,7 @@ int Configuration::fixTriangle() {
   for (int i = 0; i < 3; i++) {
     translate[i] = -this->p(3 * triangle[0] + i);
   }
-  for (int i = 0; i < NUM_OF_SPHERES; i++) {
+  for (int i = 0; i < num_of_spheres; i++) {
     for (int j = 0; j < 3; j++) {
       this->p(3 * i + j) += translate[j];
     }
@@ -192,7 +192,7 @@ int Configuration::fixTriangle() {
     rotate1_ang = M_PI;
     rotate1_axis << 0, 1, 0;
     AngleAxisd rotationMatrix1(rotate1_ang, rotate1_axis);
-    for (int i = 0; i < NUM_OF_SPHERES; i++) {
+    for (int i = 0; i < num_of_spheres; i++) {
       for (int j = 0; j < 3; j++) {
         temp(j) = this->p(3 * i + j);
       }
@@ -208,7 +208,7 @@ int Configuration::fixTriangle() {
     rotate1_axis.normalize();
     // rotate by negative that angle
     AngleAxisd rotationMatrix1(rotate1_ang, rotate1_axis);
-    for (int i = 0; i < NUM_OF_SPHERES; i++) {
+    for (int i = 0; i < num_of_spheres; i++) {
       for (int j = 0; j < 3; j++) {
         temp(j) = this->p(3 * i + j);
       }
@@ -241,7 +241,7 @@ int Configuration::fixTriangle() {
   if (fabs(rotate2_ang) > 1e-14) {
     AngleAxisd rotationMatrix2;
     rotationMatrix2 = AngleAxisd(-rotate2_ang,  Vector3d::UnitX());
-    for (int i = 0; i < NUM_OF_SPHERES; i++) {
+    for (int i = 0; i < num_of_spheres; i++) {
       for (int j = 0; j < 3; j++) {
         temp(j) = this->p(3 * i + j);
       }
@@ -265,7 +265,7 @@ int Configuration::fixTriangle() {
 
 void Configuration::printAdj() {
   std::cout << "Graph:" << std::endl;
-  for (int i = 0; i < NUM_OF_SPHERES; i++) {
+  for (int i = 0; i < num_of_spheres; i++) {
     std::cout << std::bitset<8 * sizeof(graph)>(g[i]);
   }
   std::cout << std::endl;
@@ -273,13 +273,12 @@ void Configuration::printAdj() {
 
 
 int Configuration::canonize() {
-
-  int lab[NUM_OF_SPHERES];
-  int ptn[NUM_OF_SPHERES];
-  int orbits[NUM_OF_SPHERES];
+  int lab[num_of_spheres];
+  int ptn[num_of_spheres];
+  int orbits[num_of_spheres];
   grouprec *group;
   statsblk stats;
-  graph canonized[NUM_OF_SPHERES];
+  graph canonized[num_of_spheres];
 
   DEFAULTOPTIONS_GRAPH(options);
   options.getcanon = true;
@@ -289,27 +288,28 @@ int Configuration::canonize() {
   options.userautomproc = groupautomproc;
   options.userlevelproc = grouplevelproc;
 
-  densenauty(this->g, lab, ptn, orbits, &options, &stats, 1, NUM_OF_SPHERES,
+  densenauty(this->g, lab, ptn, orbits, &options, &stats, 1, num_of_spheres,
              canonized);
-
-  double newPoints[3 * NUM_OF_SPHERES];
-  for (int i = 0; i < NUM_OF_SPHERES; i++) {
+  double newPoints[3 * num_of_spheres];
+  for (int i = 0; i < num_of_spheres; i++) {
     for (int j = 0; j < 3; j++) {
       newPoints[3 * i + j] = (this->p)(3 * lab[i] + j);
     }
   }
+  
+  for(int i=0; i<3 * num_of_spheres; i++){
+    this->p(i) = newPoints[i];
+  }
+  memcpy(this->g, canonized, sizeof(graph)*num_of_spheres);
 
-  memcpy(&(this->p), newPoints, sizeof(double)*NUM_OF_SPHERES * 3);
-  memcpy(this->g, canonized, sizeof(graph)*NUM_OF_SPHERES);
-
-  densenauty(this->g, lab, ptn, orbits, &options, &stats, 1, NUM_OF_SPHERES,
+  densenauty(this->g, lab, ptn, orbits, &options, &stats, 1, num_of_spheres,
              canonized);
 
   group = groupptr(FALSE);
+
   makecosetreps(group);
   ptype.np = 0;
   allgroup3(group, countperms, &ptype);
-
   // printTriangle();
   chooseTriangle();
   return fixTriangle();

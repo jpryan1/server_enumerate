@@ -1,4 +1,4 @@
-#include "Configuration.h"
+#include "configuration.h"
 
 MatrixXd Configuration::getRightNullSpace(MatrixXd rigid, bool* null_flag) {
   if (this->isRegular) {
@@ -36,7 +36,7 @@ int Configuration::dimensionOfTangentSpace(bool useNumericalMethod) {
 
   // Allocate
   MatrixXd rigid_x = MatrixXd::Zero(this->num_of_contacts + 6,
-                                    3 * NUM_OF_SPHERES);
+                                    3 * num_of_spheres);
 
   // Populate
   populateRigidityMatrix(rigid_x, this->p);
@@ -47,13 +47,13 @@ int Configuration::dimensionOfTangentSpace(bool useNumericalMethod) {
   bool null_flag = false;
   MatrixXd right_null_space = getRightNullSpace(rigid_x, &null_flag);
   if (null_flag) {
-    if (0 <= 3 * NUM_OF_SPHERES - 6 - num_of_contacts) this->isRegular = true;
+    if (0 <= 3 * num_of_spheres - 6 - num_of_contacts) this->isRegular = true;
     return 0;
   }
   int V = right_null_space.cols();
   this->v = right_null_space.col(0);
   this->v = this->v / this->v.norm();
-  if (V <= 3 * NUM_OF_SPHERES - 6 - num_of_contacts) {
+  if (V <= 3 * num_of_spheres - 6 - num_of_contacts) {
     this->isRegular = true;
     return V;
   } else {
@@ -77,15 +77,15 @@ int Configuration::dimensionOfTangentSpace(bool useNumericalMethod) {
 
   // Compute Q matrices, check for sign-definiteness via eigendecomposition
   MatrixXd Q = MatrixXd::Zero(V, V);
-  MatrixXd R_vi = MatrixXd::Zero(this->num_of_contacts + 6, 3 * NUM_OF_SPHERES);
-  ConfigVector vi;
+  MatrixXd R_vi = MatrixXd::Zero(this->num_of_contacts + 6, 3 * num_of_spheres);
+  VectorXd vi(3 * num_of_spheres);
   VectorXd eigs(V);
   bool flag;
   // this can be vectorized better... TODO
   for (int k = 0; k < W; k++) {
     for (int i = 0; i < V; i++) {
       vi << right_null_space.col(i);
-      rigid_x = MatrixXd::Zero(this->num_of_contacts + 6, 3 * NUM_OF_SPHERES);
+      rigid_x = MatrixXd::Zero(this->num_of_contacts + 6, 3 * num_of_spheres);
       populateRigidityMatrix(R_vi, vi);
       for (int j = 0; j < V; j++) {
         Q(i, j) = left_null_space.col(k).transpose() *
@@ -117,7 +117,7 @@ int Configuration::dimensionOfTangentSpace(bool useNumericalMethod) {
       }
       vi = Matrix<double, 3 * NUM_OF_SPHERES, 1>::Zero();
       // zero out for next iteration
-      R_vi = MatrixXd::Zero(this->num_of_contacts + 6, 3 * NUM_OF_SPHERES);
+      R_vi = MatrixXd::Zero(this->num_of_contacts + 6, 3 * num_of_spheres);
     }
   }
   if (useNumericalMethod) {
@@ -128,12 +128,13 @@ int Configuration::dimensionOfTangentSpace(bool useNumericalMethod) {
 
 
 int Configuration::numerical_findDimension(MatrixXd& right_null_space) {
-  std::vector<ConfigVector> basis;
-  ConfigVector jump, proj, tang, orth;
+  std::vector<VectorXd> basis;
+  VectorXd jump(3 * num_of_spheres), proj(3 * num_of_spheres),
+    tang(3 * num_of_spheres), orth(3 * num_of_spheres);
   for (int i = 0; i < right_null_space.cols(); i++) {
     jump = DEL_S0 * right_null_space.col(i) + this->p;
 
-    if (project(jump, proj)) {
+    if (project(&jump, &proj)) {
       if ((proj - jump).norm() <= TOLMAX) {
         tang = proj - this->p;
         if (tang.norm() < TOLMIN) {
@@ -149,7 +150,7 @@ int Configuration::numerical_findDimension(MatrixXd& right_null_space) {
       }
     }
     jump = -DEL_S0 * right_null_space.col(i) + this->p;
-    if (project(jump, proj)) {
+    if (project(&jump, &proj)) {
       if ((proj - jump).norm() <= TOLMAX) {
         tang = proj - this->p;
         if (tang.norm() < TOLMIN) {

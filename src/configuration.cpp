@@ -1,14 +1,17 @@
-#include "Configuration.h"
+#include "configuration.h"
 
 
-Configuration::Configuration(double* points, graph* adj) {
-  memcpy(&p, points, 3 * NUM_OF_SPHERES * sizeof(double));
-
-  memcpy(g, adj, NUM_OF_SPHERES * sizeof(graph));
-
+Configuration::Configuration(double* points, graph* adj, int n) {
+  
+  p = VectorXd(3*n);
+  num_of_spheres = n;
+  for(int i=0; i<num_of_spheres * 3; i++){
+    p(i) = points[i];
+  }
+  memcpy(g, adj, num_of_spheres * sizeof(graph));
   this->num_of_contacts = 0;
-  for (int i = 0; i < NUM_OF_SPHERES - 1; i++) {
-    for (int j = i + 1; j < NUM_OF_SPHERES; j++) {
+  for (int i = 0; i < num_of_spheres - 1; i++) {
+    for (int j = i + 1; j < num_of_spheres; j++) {
       if (this->hasEdge(i, j)) {
         this->num_of_contacts++;
       }
@@ -71,10 +74,10 @@ int Configuration::hasEdge(int i, int j) {
 
 
 // TODO the following doesn't account for whether the fixed points are collinear
-void Configuration::populateRigidityMatrix(MatrixXd& rigid, ConfigVector& x) {
+void Configuration::populateRigidityMatrix(MatrixXd& rigid, VectorXd& x) {
   int row = 0;
-  for (int i = 0; i < NUM_OF_SPHERES - 1; i++) {
-    for (int j = i + 1; j < NUM_OF_SPHERES; j++) {
+  for (int i = 0; i < num_of_spheres - 1; i++) {
+    for (int j = i + 1; j < num_of_spheres; j++) {
       if (this->hasEdge(i, j)) {
         // ith trio should be p_i - p_j, jth trio should be p_j-p_i
         for (int k = 0; k < 3; k++) {
@@ -104,8 +107,8 @@ std::vector<Contact> Configuration::checkForNewContacts(ConfigVector proj,
   } else {
     tol = tolA;
   }
-  for (int i = 0; i < NUM_OF_SPHERES - 1; i++) {
-    for (int j = i + 1; j < NUM_OF_SPHERES; j++) {
+  for (int i = 0; i < num_of_spheres - 1; i++) {
+    for (int j = i + 1; j < num_of_spheres; j++) {
       if (this->hasEdge(i, j)) {
         continue;
       }
@@ -124,7 +127,7 @@ std::vector<Contact> Configuration::checkForNewContacts(ConfigVector proj,
 
 
 void Configuration::printDetails() {
-  for (int i = 0; i < NUM_OF_SPHERES * 3; i += 3) {
+  for (int i = 0; i < num_of_spheres * 3; i += 3) {
     for (int j = 0; j < 3; j++) {
       std::cout << (this->p)(i + j) << " ";
     }
@@ -134,16 +137,16 @@ void Configuration::printDetails() {
 
 
 void Configuration::readClusterFromFile(std::istream& file) {
-  memset(this->g, 0, NUM_OF_SPHERES * sizeof(graph));
+  memset(this->g, 0, num_of_spheres * sizeof(graph));
   double d;
-  for (int i = 0; i < NUM_OF_SPHERES; i++) {
+  for (int i = 0; i < num_of_spheres; i++) {
     for (int j = 0; j < 3; j++) {
       file >> d;
       this->p(3 * i + j) = d;
     }
   }
-  for (int i = 0; i < NUM_OF_SPHERES - 1; i++) {
-    for (int j = i + 1; j < NUM_OF_SPHERES; j++) {
+  for (int i = 0; i < num_of_spheres - 1; i++) {
+    for (int j = i + 1; j < num_of_spheres; j++) {
       double dist = 0;
       for (int k = 0; k < 3; k++) {
         dist += pow(this->p(3 * i + k) - this->p(3 * j + k), 2);

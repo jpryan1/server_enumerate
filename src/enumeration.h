@@ -1,7 +1,7 @@
 #ifndef  _ENUMERATION_H_    /* only process this file once */
 #define  _ENUMERATION_H_
 
-#include "Configuration.h"
+#include "configuration.h"
 #include <vector>
 
 
